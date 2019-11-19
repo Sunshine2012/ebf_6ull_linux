@@ -6,12 +6,35 @@
 
 **安装独立编译工具链**
 
-arm-linux-gnueabihf-gcc：v7.4.0
+1. 命令安装方式（推荐新手使用这种方法）：
+
+arm-linux-gnueabihf-gcc：`v7.4.0`
 ```bash
 sudo apt-get install gcc-arm-linux-gnueabihf
 ```
 
+2. 安装包安装方式(推荐老手使用这种方法)
+
+从百度云盘下载`arm-linux-gnueabihf-gcc`编译器的压缩包，版本是 `v4.9.3`
+
+链接：[https://github.com/Embdefire/products/wiki](https://github.com/Embdefire/products/wiki) 
+
+在 **Linux系列产品** 中找到的网盘链接，在`i.MX6ULL系列\5-编译工具链\arm-gcc` 目录下找到 `arm-gcc.tar.gz` 压缩包并且下载
+
+安装方法参考：[https://blog.csdn.net/u013485792/article/details/50958253](https://blog.csdn.net/u013485792/article/details/50958253)
+
+> 作者备注：为什么推荐更低版本的编译器呢？因为作者亲测新版本的编译器并不能完全兼容，在测试比如新版本编译的内核镜像无法识别到4G模块。但是在绝大部分情况下`v7.4.0`版本的编译器都是没有任何问题的！！！请放心使用！！！
+
+
 ## 内核编译过程
+
+**导出环境变量**
+
+```bash
+export PATH=/opt/arm-gcc/bin:$PATH
+export ARCH=arm 
+export CROSS_COMPILE=arm-linux-gnueabihf- 
+```
 
 **清除编译信息**
 
@@ -44,6 +67,13 @@ ebf_6ull_linux/arch/arm/boot
 ebf_6ull_linux/arch/arm/boot/dts
 ```
 
+**拷贝zImage与dtb**
+
+可以直接运行脚本`copy.sh`将内核镜像与设备树拷贝到`image`目录下
+
+```bash
+./copy.sh
+```
 
 ## 只编译设备树
 在后面添加 `dtbs` 即可
@@ -66,6 +96,15 @@ make ARCH=arm -j10 CROSS_COMPILE=arm-linux-gnueabihf- dtbs
 - imx6ull-14x14-evk-emmc-wifi.dts 
 - imx6ull-14x14-evk-gpmi-weim-cam-dht11.dts 
 - imx6ull-14x14-evk-emmc-cam-dht11.dts
+
+---
+## 骚气的一键编译
+```
+./build.sh
+```
+
+生成的内核镜像与设备树均被拷贝到 `image` 目录下。
+内核模块相关均被安装到 `my_lib/lib/` 目录下的`modules`文件夹下，可以直接替换掉`rootfs(根文件系统)`中的`/lib/modules/`。
 
 
 ## make menuconfig配置选项（部分）
